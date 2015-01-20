@@ -3,6 +3,10 @@
  * Copyright © 2007-2009 Daniel Drake <dsd@gentoo.org>
  * Copyright © 2001 Johannes Erdfelt <johannes@erdfelt.com>
  *
+ * Modified 2014 Martin Marinov <martintzvetomirov@gmail.com>
+ *  - Added function open2 to open a devce from an existing file
+ *  descriptor
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -537,6 +541,8 @@ struct usbi_os_backend {
 	 */
 	int (*init)(struct libusb_context *ctx);
 
+	int (*init2)(struct libusb_context *ctx, const char * uspfs_path_input);
+
 	/* Deinitialization. Optional. This function should destroy anything
 	 * that was set up by init.
 	 *
@@ -641,6 +647,8 @@ struct usbi_os_backend {
 	 * do this for you.
 	 */
 	int (*open)(struct libusb_device_handle *handle);
+
+	int (*open2)(struct libusb_device_handle *handle, int fd);
 
 	/* Close a device such that the handle cannot be used again. Your backend
 	 * should destroy any resources that were allocated in the open path.

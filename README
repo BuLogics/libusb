@@ -26,3 +26,7 @@ http://mailing-list.libusb.info
 - Nathan Hjelm <hjelmn@users.sourceforge.net>
 - Chris Dickens <christopher.a.dickens@gmail.com>
 (Please use the mailing list rather than mailing developers directly)
+
+The current modification done by Martin Marinov <martintzvetomirov@gmail.com> 2014
+allows the library to run seamlessly on unrooted Android devices by providing a
+file descriptor to the open function (named open2).

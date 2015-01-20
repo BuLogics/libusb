@@ -3,6 +3,11 @@
  * Copyright © 2007 Daniel Drake <dsd@gentoo.org>
  * Copyright © 2001 Johannes Erdfelt <johannes@erdfelt.com>
  *
+ * Modified 2014 Martin Marinov <martintzvetomirov@gmail.com>
+ *  - Added function open2 to open a devce from an existing file
+ *  descriptor
+ *  - Added function init2 to init  from a known device path
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
