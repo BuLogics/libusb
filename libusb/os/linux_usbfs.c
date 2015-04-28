@@ -477,11 +477,12 @@ static int op_init2(struct libusb_context *ctx, const char * uspfs_path_input)
 		return LIBUSB_ERROR_OTHER;
 	}
 
-	usbfs_path = malloc(strlenusbfs+1);
+	// usbfs_path is never used
+	// usbfs_path = malloc(strlenusbfs+1);
 
-	char * discarded_path = (char *) usbfs_path;
-	strcpy(discarded_path, uspfs_path_input);
-	discarded_path[strlenusbfs] = 0;
+	// char * discarded_path = (char *) usbfs_path;
+	// strcpy(discarded_path, uspfs_path_input);
+	// discarded_path[strlenusbfs] = 0;
 
 	if (monotonic_clkid == -1)
 		monotonic_clkid = find_monotonic_clock();
