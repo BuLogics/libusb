@@ -16,11 +16,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-LOCAL_PATH:= $(call my-dir)
+LIBUSB_LOCAL_PATH:= $(call my-dir)
 
 # libusb
 
 include $(CLEAR_VARS)
+
+LOCAL_PATH = $(LIBUSB_LOCAL_PATH)
 
 LIBUSB_ROOT_REL:= ../..
 LIBUSB_ROOT_ABS:= $(LOCAL_PATH)/../..
