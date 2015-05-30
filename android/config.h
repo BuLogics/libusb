@@ -22,7 +22,7 @@
 //#define ENABLE_DEBUG_LOGGING 4
 
 /* Message logging */
-#define ENABLE_LOGGING 4
+// #define ENABLE_LOGGING 4
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
