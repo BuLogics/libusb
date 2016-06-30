@@ -1340,7 +1340,7 @@ int API_EXPORTED libusb_open2(libusb_device *dev, libusb_device_handle **handle,
 	return 0;
 }
 
-/** \ingroup libusb_dev
+/** \ingroup dev
  * Convenience function for finding a device with a particular
  * <tt>idVendor</tt>/<tt>idProduct</tt> combination. This function is intended
  * for those scenarios where you are using libusb to knock up a quick test
@@ -2209,7 +2209,7 @@ err_unlock:
 	return r;
 }
 
-/** \ingroup libusb_lib
+/** \ingroup lib
  * Initialize libusb. This function must be called before calling any other
  * libusb function.
  *
