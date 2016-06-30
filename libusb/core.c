@@ -45,6 +45,9 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "libusb/core.c",__VA_ARGS__)
+#else
+#define LOGI(...) ((void) 0)
 #endif
 
 #include "libusbi.h"
@@ -831,7 +834,7 @@ ssize_t API_EXPORTED libusb_get_device_list(libusb_context *ctx,
 		if (usbi_backend->hotplug_poll)
 			usbi_backend->hotplug_poll();
 
-        usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex : locking usb_devs_lock=%d ", ctx->usb_devs_lock.value);
+        LOGI("ctx mutex : locking usb_devs_lock=%d ", ctx->usb_devs_lock.value);
 		usbi_mutex_lock(&ctx->usb_devs_lock);
 		list_for_each_entry(dev, &ctx->usb_devs, list, struct libusb_device) {
 			discdevs = discovered_devs_append(discdevs, dev);
@@ -841,7 +844,7 @@ ssize_t API_EXPORTED libusb_get_device_list(libusb_context *ctx,
 				break;
 			}
 		}
-        usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex : unlocking usb_devs_lock=%d ", ctx->usb_devs_lock.value);
+        LOGI( "ctx mutex : unlocking usb_devs_lock=%d ", ctx->usb_devs_lock.value);
 		usbi_mutex_unlock(&ctx->usb_devs_lock);
 	} else {
 		/* backend does not provide hotplug support */
@@ -2153,7 +2156,7 @@ int API_EXPORTED libusb_init2(libusb_context **context, const char * uspfs_path_
 	usbi_mutex_init(&ctx->usb_devs_lock);
 	usbi_mutex_init(&ctx->open_devs_lock);
 	usbi_mutex_init(&ctx->hotplug_cbs_lock);
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex init: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+    LOGI("ctx mutex init: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 
 	list_init(&ctx->usb_devs);
 	list_init(&ctx->open_devs);
@@ -2204,11 +2207,12 @@ err_free_ctx:
 	}
 	usbi_mutex_unlock(&ctx->usb_devs_lock);
 
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex before destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+    LOGI("ctx mutex before destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 	usbi_mutex_destroy(&ctx->open_devs_lock);
 	usbi_mutex_destroy(&ctx->usb_devs_lock);
 	usbi_mutex_destroy(&ctx->hotplug_cbs_lock);
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex after destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+    LOGI("ctx mutex after destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+
 
 	free(ctx);
 err_unlock:
@@ -2279,7 +2283,7 @@ int API_EXPORTED libusb_init(libusb_context **context)
 	usbi_mutex_init(&ctx->usb_devs_lock);
 	usbi_mutex_init(&ctx->open_devs_lock);
 	usbi_mutex_init(&ctx->hotplug_cbs_lock);
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex init: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+    LOGI("ctx mutex init: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 
     list_init(&ctx->usb_devs);
 	list_init(&ctx->open_devs);
@@ -2330,11 +2334,11 @@ err_free_ctx:
 	}
 	usbi_mutex_unlock(&ctx->usb_devs_lock);
 
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex before destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock, ctx->open_devs_lock, ctx->hotplug_cbs_lock);
+    LOGI("ctx mutex before destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 	usbi_mutex_destroy(&ctx->open_devs_lock);
 	usbi_mutex_destroy(&ctx->usb_devs_lock);
 	usbi_mutex_destroy(&ctx->hotplug_cbs_lock);
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex after destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock, ctx->open_devs_lock, ctx->hotplug_cbs_lock);
+    LOGI("ctx mutex after destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 
 	free(ctx);
 err_unlock:
@@ -2408,11 +2412,11 @@ void API_EXPORTED libusb_exit(struct libusb_context *ctx)
 		usbi_backend->exit();
 
 
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex before destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+    LOGI("ctx mutex before destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 	usbi_mutex_destroy(&ctx->open_devs_lock);
 	usbi_mutex_destroy(&ctx->usb_devs_lock);
 	usbi_mutex_destroy(&ctx->hotplug_cbs_lock);
-    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex after destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
+    LOGI("ctx mutex after destroy: usb_devs_lock=%d open_devs_lock=%d hotplug_cbs_lock=%d", ctx->usb_devs_lock.value, ctx->open_devs_lock.value, ctx->hotplug_cbs_lock.value);
 
     free(ctx);
 }
