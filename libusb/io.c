@@ -1129,6 +1129,8 @@ int usbi_io_init(struct libusb_context *ctx)
 	usbi_mutex_init(&ctx->event_waiters_lock);
 	usbi_cond_init(&ctx->event_waiters_cond);
 	usbi_mutex_init(&ctx->event_data_lock);
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex init: flying_transfers_lock=%d event_waiters_lock=%d event_data_lock=%d", ctx->flying_transfers_lock.value, ctx->event_waiters_lock.value, ctx->hotplug_cbs_lock.value);
+
 	usbi_tls_key_create(&ctx->event_handling_key);
 	list_init(&ctx->flying_transfers);
 	list_init(&ctx->ipollfds);
@@ -1171,11 +1173,15 @@ err_close_pipe:
 	usbi_close(ctx->event_pipe[0]);
 	usbi_close(ctx->event_pipe[1]);
 err:
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex destroy before: flying_transfers_lock=%d event_waiters_lock=%d event_data_lock=%d", ctx->flying_transfers_lock.value, ctx->event_waiters_lock.value, ctx->hotplug_cbs_lock.value);
+
 	usbi_mutex_destroy(&ctx->flying_transfers_lock);
 	usbi_mutex_destroy(&ctx->events_lock);
 	usbi_mutex_destroy(&ctx->event_waiters_lock);
 	usbi_cond_destroy(&ctx->event_waiters_cond);
 	usbi_mutex_destroy(&ctx->event_data_lock);
+
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex destroy after: flying_transfers_lock=%d event_waiters_lock=%d event_data_lock=%d", ctx->flying_transfers_lock.value, ctx->event_waiters_lock.value, ctx->hotplug_cbs_lock.value);
 	usbi_tls_key_delete(ctx->event_handling_key);
 	return r;
 }
@@ -1191,12 +1197,14 @@ void usbi_io_exit(struct libusb_context *ctx)
 		close(ctx->timerfd);
 	}
 #endif
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex destroy before: flying_transfers_lock=%d event_waiters_lock=%d event_data_lock=%d", ctx->flying_transfers_lock.value, ctx->event_waiters_lock.value, ctx->hotplug_cbs_lock.value);
 	usbi_mutex_destroy(&ctx->flying_transfers_lock);
 	usbi_mutex_destroy(&ctx->events_lock);
 	usbi_mutex_destroy(&ctx->event_waiters_lock);
 	usbi_cond_destroy(&ctx->event_waiters_cond);
 	usbi_mutex_destroy(&ctx->event_data_lock);
 	usbi_tls_key_delete(ctx->event_handling_key);
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex destroy after: flying_transfers_lock=%d event_waiters_lock=%d event_data_lock=%d", ctx->flying_transfers_lock.value, ctx->event_waiters_lock.value, ctx->hotplug_cbs_lock.value);
 	if (ctx->pollfds)
 		free(ctx->pollfds);
 }
@@ -2643,10 +2651,12 @@ int usbi_add_pollfd(struct libusb_context *ctx, int fd, short events)
 	usbi_dbg("add fd %d events %d", fd, events);
 	ipollfd->pollfd.fd = fd;
 	ipollfd->pollfd.events = events;
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex : locking event_data_lock=%d ", ctx->event_data_lock.value);
 	usbi_mutex_lock(&ctx->event_data_lock);
 	list_add_tail(&ipollfd->list, &ctx->ipollfds);
 	ctx->pollfds_cnt++;
 	usbi_fd_notification(ctx);
+    usbi_log_str(ctx, LIBUSB_LOG_LEVEL_INFO, "ctx mutex : unlocking event_data_lock=%d ", ctx->event_data_lock.value);
 	usbi_mutex_unlock(&ctx->event_data_lock);
 
 	if (ctx->fd_added_cb)
