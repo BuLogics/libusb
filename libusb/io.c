@@ -2619,7 +2619,7 @@ void API_EXPORTED libusb_set_pollfd_notifiers(libusb_context *ctx,
  * Interrupt the iteration of the event handling thread, so that it picks
  * up the fd change. Callers of this function must hold the event_data_lock.
  */
-static void usbi_fd_notification(struct libusb_context *ctx)
+void usbi_fd_notification(struct libusb_context *ctx)
 {
 	int pending_events;
 

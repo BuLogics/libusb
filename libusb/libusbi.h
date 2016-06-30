@@ -65,6 +65,7 @@ extern "C" {
 /* Backend specific capabilities */
 #define USBI_CAP_HAS_HID_ACCESS			0x00010000
 #define USBI_CAP_SUPPORTS_DETACH_KERNEL_DRIVER	0x00020000
+#define USBI_CAP_HAS_POLLABLE_DEVICE_FD	0x00020000
 
 /* Maximum number of bytes in a log line */
 #define USBI_MAX_LOG_LEN	1024
@@ -560,7 +561,7 @@ struct usbi_pollfd {
 
 int usbi_add_pollfd(struct libusb_context *ctx, int fd, short events);
 void usbi_remove_pollfd(struct libusb_context *ctx, int fd);
-
+void usbi_fd_notification(struct libusb_context *ctx);
 /* device discovery */
 
 /* we traverse usbfs without knowing how many devices we are going to find.
