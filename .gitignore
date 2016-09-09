@@ -50,3 +50,7 @@ Release
 *~
 *.orig
 .dirstamp
+*.swn
+*.swm
+*.swo
+.amend
