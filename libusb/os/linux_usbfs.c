@@ -1112,7 +1112,6 @@ static int initialize_device(struct libusb_device *dev, uint8_t busnum,
 	}
 
 	r = usbfs_get_active_config(dev, fd);
-<<<<<<< HEAD
 	if (r > 0) {
 		priv->active_config = r;
 		r = LIBUSB_SUCCESS;
@@ -1553,7 +1552,7 @@ static int op_open(struct libusb_device_handle *handle)
 			if (handle->dev->attached) {
 				usbi_dbg("open failed with no device, but device still attached");
 				linux_device_disconnected(handle->dev->bus_number,
-						handle->dev->device_address);
+						handle->dev->device_address, NULL);
 			}
 			usbi_mutex_static_unlock(&linux_hotplug_lock);
 		}

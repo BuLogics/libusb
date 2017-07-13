@@ -1120,7 +1120,7 @@ int API_EXPORTED libusb_wrap_fd(libusb_context *ctx, int fd,
 	if (!_dev_handle)
 		return LIBUSB_ERROR_NO_MEM;
 
-	r = usbi_mutex_init(&_dev_handle->lock);
+	r = usbi_mutex_init(&_dev_handle->lock, NULL);
 	if (r) {
 		free(_dev_handle);
 		return LIBUSB_ERROR_OTHER;
