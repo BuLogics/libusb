@@ -661,15 +661,16 @@ ssize_t API_EXPORTED libusb_get_device_list(libusb_context *ctx,
 {
 	struct discovered_devs *discdevs = discovered_devs_alloc();
 	struct libusb_device **ret;
-	int r = 0;
+	int r = -1;
 	ssize_t i, len;
 	USBI_GET_CONTEXT(ctx);
-	usbi_dbg("");
+	__android_log_print(ANDROID_LOG_INFO, "libusb", "trying to get device list");
 
 	if (!discdevs)
 		return LIBUSB_ERROR_NO_MEM;
 
 	if (libusb_has_capability(LIBUSB_CAP_HAS_HOTPLUG)) {
+	    __android_log_print(ANDROID_LOG_INFO, "libusb", "hotplug");
 		/* backend provides hotplug support */
 		struct libusb_device *dev;
 
@@ -686,12 +687,18 @@ ssize_t API_EXPORTED libusb_get_device_list(libusb_context *ctx,
 			}
 		}
 		usbi_mutex_unlock(&ctx->usb_devs_lock);
-	} else {
+	} else if (usbi_backend->get_device_list){
+	    __android_log_write(ANDROID_LOG_INFO, "libusb", "Can't hotplug, trying backend");
 		/* backend does not provide hotplug support */
 		r = usbi_backend->get_device_list(ctx, &discdevs);
 	}
+    else{
+	    __android_log_print(ANDROID_LOG_ERROR, "libusb", "Can't use either");
+    }
+
 
 	if (r < 0) {
+	    __android_log_print(ANDROID_LOG_ERROR, "libusb", "Got error %d from inital list get", r);
 		len = r;
 		goto out;
 	}
